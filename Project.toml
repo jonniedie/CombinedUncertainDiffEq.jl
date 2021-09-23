@@ -10,6 +10,7 @@ IntervalArithmetic = "d1acc4aa-44c8-5952-acd4-ba5d80a2a253"
 ReachabilityAnalysis = "1e97bd63-91d1-579d-8e8d-501d2b57c93f"
 
 [compat]
+DifferentialEquations = "6"
 DiffEqUncertainty = "1"
 IntervalArithmetic = "0.19"
 ReachabilityAnalysis = "0.15"
