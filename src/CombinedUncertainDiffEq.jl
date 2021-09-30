@@ -1,8 +1,6 @@
 module CombinedUncertainDiffEq
 
 # Imported functions
-import ReachabilityAnalysis
-
 using ComponentArrays: ComponentArray, getaxes, getdata
 using DifferentialEquations: ODEProblem, EnsembleProblem, solve
 using DiffEqUncertainty: DiffEqUncertainty, Koopman, MonteCarlo, expectation, _rand
