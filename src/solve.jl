@@ -26,6 +26,8 @@ function uncomponentarrayize(prob; u0=prob.u0, p=prob.p)
     return ODEProblem(new_f!, getdata(u0), prob.tspan, getdata(p); kwargs...)
 end
 
+componentarray_like(a, b::ComponentArray) = ComponentArray(a, getaxes(b))
+componentarray_like(a::ComponentArray, b::ComponentArray) = a
 
 """
     mc_solve(prob, u0=prob.u0, p=prob.p, args...; trajectories, kwargs...)
@@ -33,12 +35,17 @@ end
 Solve an `ODEProblem` `prob` with uncertain parameters and initial conditions as a Monte Carlo
 simulation
 """
-function mc_solve(prob, u0=prob.u0, p=prob.p, args...; trajectories, kwargs...)
+function mc_solve(prob, u0=prob.u0, p=prob.p, args...;
+                    trajectories,
+                    u0_CoV = (_u,_p) -> componentarray_like(_u, u0),
+                    p_CoV = (_u,_p) -> componentarray_like(_p, p),
+                    kwargs...)
+
     u0 = recursive_convert(to_distribution, u0)
     p = recursive_convert(to_distribution, p)
     prob_func = function (prob, i, repeat)
-        _u0 = _rand.(u0)
-        _p = _rand.(p)
+        _u0 = u0_CoV(_rand.(u0), p)
+        _p = p_CoV(u0, _rand.(p))
         remake(prob, u0=_u0, p=_p)
     end
     mc_prob = EnsembleProblem(prob; prob_func=prob_func)
